@@ -1,4 +1,4 @@
-# MetricMuse 📊✨
+# MetricMuse: Metrics Generator for Content Writers 📊✨
 
 Welcome to `MetricMuse`! This project is all about generating insightful writing metrics from PDF documents. Whether you're analyzing research papers, whitepapers, or scripts, `MetricMuse` is here to provide comprehensive insights into the quality of writing, encompassing aspects such as grammar, readability, structure, and engagement.
 
@@ -48,3 +48,4 @@ Contributions to `MetricMuse` are more than welcome! If you have an idea for an 
 ---
 
 Happy analyzing with `MetricMuse`! 🎉
+```
