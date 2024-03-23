@@ -85,8 +85,11 @@ def process_single_document(filename, directory_path):
     ai_content_percentage = detect_ai_content(text)
     generic_content_percentage = assess_generic_content(text)
     
+    # Define the path for the full list of repetitive words file
     full_list_path = os.path.join(directory_path, f"{filename}_repetitive_words_full_list.txt")
-    with open(full_list_path, 'w') as f:
+    
+    # Write the full list of repetitive words to the file with UTF-8 encoding
+    with open(full_list_path, 'w', encoding='utf-8') as f:
         f.write(repetitive_words_text)
         
     limited_repetitive_words_text = ', '.join(repetitive_words_text.split(', ')[:10]) + '...'  # limit to first 10
@@ -99,10 +102,9 @@ def process_single_document(filename, directory_path):
         'Repetitive Words Count': repetitive_words_count,
         'Repetitive Words List (limited)': limited_repetitive_words_text,
         'Repetitive Words List (full)': full_list_path,
-        'AI Content Percentage': ai_content_percentage,  
+        'AI Content Percentage': ai_content_percentage,
         'Generic Content Percentage': generic_content_percentage,
     }
-
 
 def process_documents():
     print("Select the type of documents to analyze:")
