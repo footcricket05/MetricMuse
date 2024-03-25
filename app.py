@@ -60,7 +60,6 @@ class MetricsApp:
             return None
 
     def view_metrics(self):
-        # Adjusted the options to include Blogs
         paper_type = simpledialog.askinteger("Paper Type", "Enter paper type:\n1 for Research Papers\n2 for Whitepapers\n3 for Scripts\n4 for Blogs")
         if paper_type in [1, 2, 3, 4]:
             paper_type_str = ['Research Papers', 'Whitepapers', 'Scripts', 'Blogs'][paper_type - 1]
@@ -74,7 +73,7 @@ class MetricsApp:
             with open(csv_file, mode='r', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
                 for row in reader:
-                    for metric_name in reader.fieldnames[2:]:  # Skip 'Filename' or 'Topic' and 'Link' columns
+                    for metric_name in reader.fieldnames[2:]:  # Assuming the first two columns are not metrics
                         if metric_name not in metrics:
                             metrics[metric_name] = []
                         metrics[metric_name].append(float(row[metric_name]))
@@ -82,7 +81,10 @@ class MetricsApp:
             # Calculate average metrics
             average_metrics = {metric: sum(values) / len(values) for metric, values in metrics.items()}
 
+            # Create a display string for all metrics
             metric_display = "\n".join([f"{k}: {average_metrics[k]:.2f}" for k in average_metrics])
+
+            # Show the average metrics in a message box
             messagebox.showinfo(f"Average Metrics for {paper_type_str}", metric_display)
         else:
             messagebox.showerror("Error", "Invalid paper type. Please enter 1, 2, 3, or 4.")
