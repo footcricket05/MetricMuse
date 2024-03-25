@@ -1,0 +1,1 @@
+operational: 4, definition: 4, computational: 4, thinking: 5, education: 5, international: 2, society: 2, technology: 2, iste: 3, computer: 4, science: 4, teachers: 3, association: 2, csta: 3, work: 2, supported: 2, process: 2, problems: 4, analyzing: 2, data: 2, solutions: 2, steps: 2, goal: 2, dispositions: 2, attitudes: 2, ability: 2
