@@ -1,14 +1,13 @@
 import fitz  # PyMuPDF for PDF processing
 import os
+import re
 import csv
 import textstat
 from textblob import TextBlob
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
-import re
-from concurrent.futures import ProcessPoolExecutor
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
+from concurrent.futures import ProcessPoolExecutor
 
 # Ensure NLTK resources are available
 nltk.download('punkt', quiet=True)
@@ -45,26 +44,23 @@ def average_sentence_length(text):
     total_length = sum(len(sentence.split()) for sentence in sentences)
     return total_length / len(sentences) if sentences else 0
 
-    def find_repetitive_words(self, text):
-        # Define the set of stopwords
-        stop_words = set(stopwords.words('english'))
+def find_repetitive_words(text):
+    # Get the English stopwords
+    stop_words = set(stopwords.words('english'))
 
-        # Tokenize the text and filter out stopwords and short words
-        words = [word.lower() for word in word_tokenize(text) if word.isalpha() and word.lower() not in stop_words]
+    # Tokenize the text and filter out stopwords and short words
+    words = [word.lower() for word in word_tokenize(text) if word.isalpha() and word.lower() not in stop_words and len(word) > 3]
 
-        # Create a frequency distribution of the filtered words
-        freq_dist = nltk.FreqDist(words)
+    # Create a frequency distribution of the filtered words
+    freq_dist = nltk.FreqDist(words)
 
-        # Identify words that appear more than once and are longer than 3 characters
-        repetitive_words = {word: count for word, count in freq_dist.items() if count > 1 and len(word) > 3}
+    # Find repetitive words (appearing more than once)
+    repetitive_words = {word: count for word, count in freq_dist.items() if count > 1}
 
-        # Sort the words by their frequency
-        sorted_repetitive_words = sorted(repetitive_words.items(), key=lambda kv: kv[1], reverse=True)
+    # Format the sorted words and counts for display
+    repetitive_words_text = ', '.join([f"{word}: {count}" for word, count in repetitive_words.items()])
 
-        # Format the sorted words and counts for display
-        repetitive_words_text = ', '.join([f"{word}: {count}" for word, count in sorted_repetitive_words])
-
-        return len(repetitive_words), repetitive_words_text
+    return len(repetitive_words), repetitive_words_text
 
 def assess_generic_content(text):
     filler_words = [
@@ -122,6 +118,9 @@ def process_single_document(filename, directory_path):
         'Generic Content Percentage': generic_content_percentage,
     }
 
+    if not text.strip():
+        print(f"No extractable text found in {filename}.")
+
 def process_documents():
     print("Select the type of documents to analyze:")
     for idx, folder in enumerate(FOLDERS, start=1):
@@ -163,6 +162,10 @@ def process_documents():
             writer.writerow(result)
     
     print(f"Analysis results saved in {results_csv_path}")
+
+    if not results:
+        print("No results generated. Please check the input documents and paths.")
+
 
 if __name__ == "__main__":
     process_documents()
