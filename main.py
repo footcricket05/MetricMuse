@@ -7,6 +7,8 @@ import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 import re
 from concurrent.futures import ProcessPoolExecutor
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 
 # Ensure NLTK resources are available
 nltk.download('punkt', quiet=True)
@@ -42,13 +44,30 @@ def average_sentence_length(text):
     total_length = sum(len(sentence.split()) for sentence in sentences)
     return total_length / len(sentences) if sentences else 0
 
+
+# Ensure the stopwords are downloaded
+nltk.download('stopwords', quiet=True)
+
 def find_repetitive_words(text):
+    # Retrieve the list of stopwords
+    stop_words = set(stopwords.words('english'))
+
+    # Tokenize the text into words
     words = word_tokenize(text.lower())
-    freq_dist = nltk.FreqDist(words)
-    repetitive_words = {word: count for word, count in freq_dist.items() if count > 1 and len(word) > 3}
+
+    # Filter out stopwords and short words
+    filtered_words = [word for word in words if word not in stop_words and len(word) > 3]
+
+    # Generate a frequency distribution of the filtered words
+    freq_dist = nltk.FreqDist(filtered_words)
+
+    # Extract repetitive words and their counts
+    repetitive_words = {word: count for word, count in freq_dist.items() if count > 1}
     repetitive_words_list = [f"{word}: {count}" for word, count in repetitive_words.items()]
     repetitive_words_text = ', '.join(repetitive_words_list)
+
     return len(repetitive_words), repetitive_words_text
+
 
 def assess_generic_content(text):
     filler_words = [
