@@ -1,51 +1,60 @@
 # MetricMuse: Metrics Generator for Content Writers 📊✨
 
-Welcome to `MetricMuse`! This project is all about generating insightful writing metrics from PDF documents. Whether you're analyzing research papers, whitepapers, or scripts, `MetricMuse` is here to provide comprehensive insights into the quality of writing, encompassing aspects such as grammar, readability, structure, and engagement.
+Welcome to `MetricMuse`! This innovative project is designed to generate insightful writing metrics from PDF documents. Tailored for research papers, whitepapers, scripts, and more, `MetricMuse` offers comprehensive insights into the quality of writing, covering grammar, readability, structure, engagement, and more.
 
 ## Features 🚀
 
-`MetricMuse` offers a range of metrics to evaluate your documents:
+`MetricMuse` is packed with powerful features to evaluate your documents:
 
-- **Grammar** 📝: Evaluates the grammatical correctness of the text and estimates the percentage of grammatical errors.
-- **Readability** 📖: Measures how easy it is to understand the text.
-- **Sentence Length** 🔠: Analyzes the length of sentences for readability and conciseness.
-- **Repetitive Words** 🔁: Identifies and quantifies the repetition of words.
-- **AI Content Detection** 🤖: Estimates the percentage of content that might be AI-generated.
-- **Generic Content** 🔄: Assesses the presence of generic, non-specific content and estimates its percentage.
-- **Structural Approach** 🏗️: Evaluates the coherence and organization of the document's structure.
-- **Engagement** 💥: Assesses the document's ability to captivate and maintain the reader's interest.
+- **Grammar** 📝: Checks grammatical correctness and estimates grammatical error percentages.
+- **Readability** 📖: Assesses text understandability.
+- **Sentence Length** 🔠: Provides insights into sentence conciseness and readability.
+- **Repetitive Words Analysis** 🔁: Identifies word repetitions and offers detailed reports, including full lists saved separately for in-depth analysis.
+- **AI Content Detection** 🤖: Estimates AI-generated content percentages.
+- **Generic Content Assessment** 🔄: Evaluates and quantifies generic content.
+- **Structural Coherence** 🏗️: Reviews the document's structural organization.
+- **Engagement Potential** 💥: Measures the document's ability to engage readers.
 
 ## Getting Started 🌟
 
-To get started with `MetricMuse`, clone this repository to your local machine:
+Start by cloning `MetricMuse`:
 
 ```bash
 git clone https://github.com/footcricket05/MetricMuse.git
 ```
 
-Ensure you have Python installed and navigate to the project directory. Install the required dependencies:
+Install the required Python dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Run the main script to process your documents:
+Launch `MetricMuse`:
 
 ```bash
 python main.py
 ```
 
-Follow the prompts to select the type of documents you wish to analyze. The results will be saved in a CSV file, named according to the chosen document type.
+Follow the prompts to choose your document type for analysis. Results will be saved in a CSV file, named according to the selected document type, with detailed repetitive words lists saved in separate text files.
+
+## Parallel Processing 💡
+
+`MetricMuse` harnesses the power of parallel processing to efficiently analyze multiple documents simultaneously, ensuring speedy results even for large batches of documents.
+
+## Special Characters Handling 🛠️
+
+Our sophisticated text processing algorithms are equipped to handle a variety of special characters, ensuring robust and error-free analysis across diverse document types.
 
 ## Contributing 🤝
 
-Contributions to `MetricMuse` are more than welcome! If you have an idea for an improvement or have found a bug, feel free to open an issue or submit a pull request.
+Contributions are welcome! Feel free to propose enhancements or fix bugs by opening issues or submitting pull requests.
 
 ## License 📜
 
-`MetricMuse` is released under the MIT License. See the [LICENSE](LICENSE) file for more details.
+`MetricMuse` is available under the MIT License. See [LICENSE](LICENSE) for more information.
 
 ---
 
-Happy analyzing with `MetricMuse`! 🎉
-```
+Enjoy analyzing with `MetricMuse`! 🎉
+
+---
