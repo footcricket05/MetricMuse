@@ -60,21 +60,32 @@ class MetricsApp:
             return None
 
     def view_metrics(self):
-        paper_type = simpledialog.askinteger("Paper Type", "Enter paper type:\n1 for Research Papers\n2 for Whitepapers\n3 for Scripts")
-        if paper_type in [1, 2, 3]:
-            paper_type_str = ['Research Papers', 'Whitepapers', 'Scripts'][paper_type - 1]
-            csv_file = f"C:\\Users\\Shaurya\\Desktop\\Metrics Generation Project\\{'Research Papers' if paper_type == 1 else 'Whitepapers' if paper_type == 2 else 'Scripts'}_analysis_results.csv"
+        # Adjusted the options to include Blogs
+        paper_type = simpledialog.askinteger("Paper Type", "Enter paper type:\n1 for Research Papers\n2 for Whitepapers\n3 for Scripts\n4 for Blogs")
+        if paper_type in [1, 2, 3, 4]:
+            paper_type_str = ['Research Papers', 'Whitepapers', 'Scripts', 'Blogs'][paper_type - 1]
+            if paper_type == 4:
+                # Special handling for Blogs
+                csv_file = "C:\\Users\\Shaurya\\Desktop\\Metrics Generation Project\\Blogs_analysis_results.csv"
+            else:
+                csv_file = f"C:\\Users\\Shaurya\\Desktop\\Metrics Generation Project\\{paper_type_str}_analysis_results.csv"
+
             metrics = {}
+            with open(csv_file, mode='r', encoding='utf-8') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    for metric_name in reader.fieldnames[2:]:  # Skip 'Filename' or 'Topic' and 'Link' columns
+                        if metric_name not in metrics:
+                            metrics[metric_name] = []
+                        metrics[metric_name].append(float(row[metric_name]))
 
-            for metric_name in ['Grammatical Error Percentage', 'Readability Score', 'Average Sentence Length', 'Repetitive Words Count', 'AI Content Percentage', 'Generic Content Percentage']:
-                average_metric = self.calculate_average_metric(csv_file, metric_name)
-                if average_metric is not None:
-                    metrics[metric_name] = f"{average_metric:.2f}"
+            # Calculate average metrics
+            average_metrics = {metric: sum(values) / len(values) for metric, values in metrics.items()}
 
-            metric_display = "\n".join([f"{k}: {v}" for k, v in metrics.items()])
-            messagebox.showinfo("Average Metrics for " + paper_type_str, metric_display)
+            metric_display = "\n".join([f"{k}: {average_metrics[k]:.2f}" for k in average_metrics])
+            messagebox.showinfo(f"Average Metrics for {paper_type_str}", metric_display)
         else:
-            messagebox.showerror("Error", "Invalid paper type. Please enter 1, 2, or 3.")
+            messagebox.showerror("Error", "Invalid paper type. Please enter 1, 2, 3, or 4.")
 
     def extract_text_from_pdf(self, pdf_path):
         document = fitz.open(pdf_path)

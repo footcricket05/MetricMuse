@@ -8,6 +8,9 @@ import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords
 from concurrent.futures import ProcessPoolExecutor
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
 
 # Ensure NLTK resources are available
 nltk.download('punkt', quiet=True)
@@ -15,7 +18,50 @@ nltk.download('stopwords', quiet=True)
 
 # Define paths to the document folders
 BASE_PATH = 'C:\\Users\\Shaurya\\Desktop\\Metrics Generation Project\\Dataset'
-FOLDERS = ["Research Papers", "Whitepapers", "Scripts"]
+FOLDERS = ["Research Papers", "Whitepapers", "Scripts", "Blogs"]
+
+def fetch_blog_content(url):
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raises a HTTPError if the response code was unsuccessful
+        return response.text
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to fetch content from {url}: {e}")
+        return ""
+
+def process_blog_links(excel_path):
+    df = pd.read_excel(excel_path, engine='openpyxl')
+    blog_results = []
+
+    for index, row in df.iterrows():
+        topic = row['Topics']
+        link = row['Links']
+        html_content = fetch_blog_content(link)
+        if html_content:
+            soup = BeautifulSoup(html_content, 'html.parser')
+            text = soup.get_text()
+            metrics = calculate_metrics(text, topic)
+            blog_results.append(metrics)
+    
+    return blog_results
+
+def calculate_metrics(text, identifier):
+    error_percentage = grammatical_error_percentage(text)
+    readability_score = calculate_readability(text)
+    avg_sentence_length = average_sentence_length(text)
+    repetitive_words_count, repetitive_words_text = find_repetitive_words(text)
+    ai_content_percentage = detect_ai_content(text)
+    generic_content_percentage = assess_generic_content(text)
+    return {
+        'Identifier': identifier,
+        'Grammatical Error Percentage': error_percentage,
+        'Readability Score': readability_score,
+        'Average Sentence Length': avg_sentence_length,
+        'Repetitive Words Count': repetitive_words_count,
+        'AI Content Percentage': ai_content_percentage,
+        'Generic Content Percentage': generic_content_percentage
+    }
 
 def extract_text_from_pdf(pdf_path):
     document = fitz.open(pdf_path)
@@ -133,40 +179,38 @@ def process_documents():
         print("Invalid choice. Exiting...")
         return
 
-    directory_path = os.path.join(BASE_PATH, chosen_folder)
     results = []
+    results_csv_path = ''
+    if chosen_folder == "Blogs":
+        # For Blogs, read the Excel file and fetch HTML content
+        excel_path = 'C:\\Users\\Shaurya\\Desktop\\Metrics Generation Project\\Dataset\\Blogs\\Blog links.xlsx'
+        results = process_blog_links(excel_path)
+        results_csv_path = os.path.join('C:\\Users\\Shaurya\\Desktop\\Metrics Generation Project', 'Blogs_analysis_results.csv')
+    else:
+        # For PDFs, process each file in the selected folder
+        directory_path = os.path.join(BASE_PATH, chosen_folder)
+        with ProcessPoolExecutor() as executor:
+            futures = [executor.submit(process_single_document, filename, directory_path) for filename in os.listdir(directory_path) if filename.endswith('.pdf')]
+            for future in futures:
+                try:
+                    result = future.result()
+                    if result:
+                        results.append(result)
+                except Exception as exc:
+                    print(f'An exception occurred while processing a document: {exc}')
+        results_csv_path = os.path.join('C:\\Users\\Shaurya\\Desktop\\Metrics Generation Project', f'{chosen_folder}_analysis_results.csv')
 
-    # Set up a process pool to handle parallel document processing
-    with ProcessPoolExecutor() as executor:
-        # Submit tasks to the process pool for each PDF file
-        futures = [executor.submit(process_single_document, filename, directory_path) 
-                   for filename in os.listdir(directory_path) if filename.endswith('.pdf')]
-
-        # Collect results as they are completed
-        for future in futures:
-            try:
-                result = future.result()
-                results.append(result)
-            except Exception as exc:
-                print(f'An exception occurred while processing a document: {exc}')
-
-    # Output results to a CSV file in the base directory (not inside the Dataset directory)
-    results_csv_path = os.path.join('C:\\Users\\Shaurya\\Desktop\\Metrics Generation Project', f'{chosen_folder}_analysis_results.csv')
-    with open(results_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ['Filename', 'Grammatical Error Percentage', 'Readability Score', 'Average Sentence Length',
-                      'Repetitive Words Count', 'Repetitive Words List (limited)', 'Repetitive Words List (full)',
-                      'AI Content Percentage', 'Generic Content Percentage']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for result in results:
-            writer.writerow(result)
-    
-    print(f"Analysis results saved in {results_csv_path}")
-
-    if not results:
+    # Write the results to a CSV file
+    if results:
+        with open(results_csv_path, 'w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = results[0].keys()
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            for result in results:
+                writer.writerow(result)
+        print(f"Analysis results saved in {results_csv_path}")
+    else:
         print("No results generated. Please check the input documents and paths.")
-
 
 if __name__ == "__main__":
     process_documents()
-
