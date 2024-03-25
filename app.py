@@ -13,6 +13,7 @@ from nltk.corpus import stopwords
 
 # Ensure NLTK resources are available
 nltk.download('punkt', quiet=True)
+nltk.download('stopwords')
 
 class MetricsApp:
     def __init__(self, root):
@@ -110,26 +111,24 @@ class MetricsApp:
             'Generic Content Percentage': round(generic_content_percentage, 2),
         }
 
-    # Download the stopwords from NLTK
-    nltk.download('stopwords')
-
     def find_repetitive_words(self, text):
-        # Get the English stopwords
+        # Define the set of stopwords
         stop_words = set(stopwords.words('english'))
 
         # Tokenize the text and filter out stopwords and short words
-        words = word_tokenize(text.lower())
-        filtered_words = [word for word in words if word not in stop_words and len(word) > 3]
+        words = [word.lower() for word in word_tokenize(text) if word.isalpha() and word.lower() not in stop_words]
 
         # Create a frequency distribution of the filtered words
-        freq_dist = nltk.FreqDist(filtered_words)
+        freq_dist = nltk.FreqDist(words)
 
-        # Find repetitive words (appearing more than once)
-        repetitive_words = {word: count for word, count in freq_dist.items() if count > 1}
-        
-        # Prepare the list of repetitive words with counts for display
-        repetitive_words_list = [f"{word}: {count}" for word, count in repetitive_words.items()]
-        repetitive_words_text = ', '.join(repetitive_words_list)
+        # Identify words that appear more than once and are longer than 3 characters
+        repetitive_words = {word: count for word, count in freq_dist.items() if count > 1 and len(word) > 3}
+
+        # Sort the words by their frequency
+        sorted_repetitive_words = sorted(repetitive_words.items(), key=lambda kv: kv[1], reverse=True)
+
+        # Format the sorted words and counts for display
+        repetitive_words_text = ', '.join([f"{word}: {count}" for word, count in sorted_repetitive_words])
 
         return len(repetitive_words), repetitive_words_text
 

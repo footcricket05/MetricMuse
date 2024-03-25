@@ -12,6 +12,7 @@ from nltk.tokenize import word_tokenize
 
 # Ensure NLTK resources are available
 nltk.download('punkt', quiet=True)
+nltk.download('stopwords', quiet=True)
 
 # Define paths to the document folders
 BASE_PATH = 'C:\\Users\\Shaurya\\Desktop\\Metrics Generation Project\\Dataset'
@@ -44,30 +45,26 @@ def average_sentence_length(text):
     total_length = sum(len(sentence.split()) for sentence in sentences)
     return total_length / len(sentences) if sentences else 0
 
+    def find_repetitive_words(self, text):
+        # Define the set of stopwords
+        stop_words = set(stopwords.words('english'))
 
-# Ensure the stopwords are downloaded
-nltk.download('stopwords', quiet=True)
+        # Tokenize the text and filter out stopwords and short words
+        words = [word.lower() for word in word_tokenize(text) if word.isalpha() and word.lower() not in stop_words]
 
-def find_repetitive_words(text):
-    # Retrieve the list of stopwords
-    stop_words = set(stopwords.words('english'))
+        # Create a frequency distribution of the filtered words
+        freq_dist = nltk.FreqDist(words)
 
-    # Tokenize the text into words
-    words = word_tokenize(text.lower())
+        # Identify words that appear more than once and are longer than 3 characters
+        repetitive_words = {word: count for word, count in freq_dist.items() if count > 1 and len(word) > 3}
 
-    # Filter out stopwords and short words
-    filtered_words = [word for word in words if word not in stop_words and len(word) > 3]
+        # Sort the words by their frequency
+        sorted_repetitive_words = sorted(repetitive_words.items(), key=lambda kv: kv[1], reverse=True)
 
-    # Generate a frequency distribution of the filtered words
-    freq_dist = nltk.FreqDist(filtered_words)
+        # Format the sorted words and counts for display
+        repetitive_words_text = ', '.join([f"{word}: {count}" for word, count in sorted_repetitive_words])
 
-    # Extract repetitive words and their counts
-    repetitive_words = {word: count for word, count in freq_dist.items() if count > 1}
-    repetitive_words_list = [f"{word}: {count}" for word, count in repetitive_words.items()]
-    repetitive_words_text = ', '.join(repetitive_words_list)
-
-    return len(repetitive_words), repetitive_words_text
-
+        return len(repetitive_words), repetitive_words_text
 
 def assess_generic_content(text):
     filler_words = [
