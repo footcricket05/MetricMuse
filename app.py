@@ -9,6 +9,7 @@ from tkinter import simpledialog, messagebox
 from threading import Thread
 import nltk
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 
 # Ensure NLTK resources are available
 nltk.download('punkt', quiet=True)
@@ -109,15 +110,28 @@ class MetricsApp:
             'Generic Content Percentage': round(generic_content_percentage, 2),
         }
 
+    # Download the stopwords from NLTK
+    nltk.download('stopwords')
+
     def find_repetitive_words(self, text):
-        """Identifies repetitive words and their counts."""
+        # Get the English stopwords
+        stop_words = set(stopwords.words('english'))
+
+        # Tokenize the text and filter out stopwords and short words
         words = word_tokenize(text.lower())
-        freq_dist = nltk.FreqDist(words)
-        repetitive_words = {word: count for word, count in freq_dist.items() if count > 1 and len(word) > 3}
+        filtered_words = [word for word in words if word not in stop_words and len(word) > 3]
+
+        # Create a frequency distribution of the filtered words
+        freq_dist = nltk.FreqDist(filtered_words)
+
+        # Find repetitive words (appearing more than once)
+        repetitive_words = {word: count for word, count in freq_dist.items() if count > 1}
+        
+        # Prepare the list of repetitive words with counts for display
         repetitive_words_list = [f"{word}: {count}" for word, count in repetitive_words.items()]
         repetitive_words_text = ', '.join(repetitive_words_list)
-        return len(repetitive_words), repetitive_words_text
 
+        return len(repetitive_words), repetitive_words_text
 
     def assess_generic_content(self, text):
         """
