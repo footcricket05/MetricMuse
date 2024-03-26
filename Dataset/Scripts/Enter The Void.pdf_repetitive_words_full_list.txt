@@ -1,0 +1,1 @@
+victor: 3, oscar: 9, years: 4, moira: 4, loves: 2, tito: 2

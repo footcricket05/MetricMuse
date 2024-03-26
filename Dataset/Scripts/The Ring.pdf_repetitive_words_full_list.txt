@@ -1,0 +1,1 @@
+ring: 2, ehren: 2, light: 5, blackness: 2, black: 2, monolith: 3, blocking: 2, ribbon: 3, white: 2, wind: 2, eclipse: 2

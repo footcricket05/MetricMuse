@@ -1,0 +1,1 @@
+coffee: 6, camera: 3, holds: 3, shop: 4, back: 2, figure: 7, level: 2, john: 6

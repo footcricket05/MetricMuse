@@ -1,0 +1,1 @@
+costar: 9, group: 4, street: 4, washington: 4, realty: 4, information: 4, provides: 2, investor: 3, communications: 2, white: 3, papers: 2, commercial: 3, real: 3, estate: 2, investing: 2, significant: 2, investment: 3, portfolio: 5, returns: 6, historically: 2, income: 5, inflation: 2, risk: 2, volatility: 2, asset: 3, classes: 2, optimal: 2, allocations: 2, given: 2, return: 2
