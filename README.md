@@ -49,10 +49,6 @@ Our sophisticated text processing algorithms are equipped to handle a variety of
 
 Contributions are welcome! Feel free to propose enhancements or fix bugs by opening issues or submitting pull requests.
 
-## License 📜
-
-`MetricMuse` is available under the MIT License. See [LICENSE](LICENSE) for more information.
-
 ---
 
 Enjoy analyzing with `MetricMuse`! 🎉
